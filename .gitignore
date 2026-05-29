@@ -1,0 +1,17 @@
+# Dependencies (installed by npm install)
+node_modules/
+
+# Environment variables (contains secrets!)
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

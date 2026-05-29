@@ -1,0 +1,1640 @@
+/* ==========================================================================
+   CINETALE — Premium Dark Movie Discovery Theme
+   ==========================================================================
+   This CSS file styles the entire Cinetale application with a stunning
+   dark violet theme. It uses CSS variables for easy theming, glassmorphism
+   effects, smooth animations, and responsive layouts.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (Variables)
+   --------------------------------------------------------------------------
+   We define all our colors, spacing, and effects here so we can reuse them
+   everywhere. If you ever want to change the theme, just update these values!
+   -------------------------------------------------------------------------- */
+:root {
+  /* Background colors — from darkest to lighter shades */
+  --bg-primary: #0a0a0f;              /* Main page background */
+  --bg-secondary: #13131a;            /* Cards, sections, secondary areas */
+  --bg-card: rgba(19, 19, 26, 0.8);   /* Card backgrounds with transparency */
+  --bg-glass: rgba(139, 92, 246, 0.05); /* Glassmorphism tint */
+
+  /* Accent colors — the violet purple brand color */
+  --accent: #8b5cf6;                   /* Primary accent (buttons, links) */
+  --accent-light: #a78bfa;            /* Lighter accent for hover states */
+  --accent-glow: rgba(139, 92, 246, 0.3); /* Glow effect around elements */
+
+  /* Text colors — light on dark for readability */
+  --text-primary: #e2e8f0;            /* Main text (headings, body) */
+  --text-secondary: #94a3b8;          /* Less important text */
+  --text-muted: #64748b;              /* Subtle, de-emphasized text */
+
+  /* Border color — very subtle violet tint */
+  --border: rgba(139, 92, 246, 0.15);
+
+  /* Status / Rating colors — used for Cinetale Meter */
+  --success: #22c55e;                  /* "Go For It" rating */
+  --warning: #f59e0b;                  /* "Time Pass" rating */
+  --danger: #ef4444;                   /* "Skip" rating */
+  --gold: #fbbf24;                     /* "Perfection" rating */
+
+  /* Utility values */
+  --radius: 12px;                      /* Default border-radius for cards */
+  --radius-lg: 20px;                   /* Larger border-radius for modals */
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* Standard box shadow */
+  --transition: all 0.3s ease;         /* Default smooth transition */
+}
+
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE STYLES
+   --------------------------------------------------------------------------
+   These styles remove default browser styling and set up a clean baseline.
+   We use `box-sizing: border-box` so padding doesn't add to element width.
+   -------------------------------------------------------------------------- */
+
+/* The universal reset: apply to all elements and their pseudo-elements */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Smooth scrolling when clicking anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body: set the dark background, light text, and Inter font */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+
+  /* Subtle background texture using radial gradients */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+}
+
+/* Make all images responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Remove default link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove list bullets */
+ul, ol {
+  list-style: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. CUSTOM SCROLLBAR
+   --------------------------------------------------------------------------
+   We style the browser scrollbar to match our dark theme.
+   This only works in Webkit browsers (Chrome, Edge, Safari).
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-glow);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+
+/* --------------------------------------------------------------------------
+   4. NAVBAR (Navigation Bar)
+   --------------------------------------------------------------------------
+   Fixed to the top of the page with a glassmorphism blur effect.
+   Contains: logo (left), search (center), nav links (right).
+   -------------------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Always on top of other content */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 70px;
+
+  /* Glassmorphism: semi-transparent background + blur */
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); /* Safari support */
+  border-bottom: 1px solid var(--border);
+}
+
+/* Logo text with a gradient effect */
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  /* Gradient text trick: set gradient as background, then clip to text */
+  background: linear-gradient(135deg, var(--accent-light), var(--accent), #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: var(--transition);
+  flex-shrink: 0; /* Don't let the logo shrink on small screens */
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+
+/* Search input container — centered in the navbar */
+.search-container {
+  flex: 0 1 400px; /* Grow up to 400px, can shrink */
+  margin: 0 2rem;
+}
+
+/* The search input itself */
+#searchInput {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 50px; /* Fully rounded pill shape */
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: var(--transition);
+}
+
+/* Placeholder text color */
+#searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+/* Glow effect when the search input is focused */
+#searchInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+/* Navigation links on the right side */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-glass);
+}
+
+/* Active nav link — shows which page you're on */
+.nav-link.active {
+  color: var(--accent-light);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+
+/* --------------------------------------------------------------------------
+   5. HERO SECTION
+   --------------------------------------------------------------------------
+   A full-width banner at the top showing the featured movie.
+   Uses a backdrop image with a dark gradient overlay for readability.
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  height: 70vh;       /* Takes up 70% of the viewport height */
+  min-height: 500px;
+  display: flex;
+  align-items: flex-end; /* Push content to the bottom */
+  padding: 3rem;
+  margin-top: 70px;   /* Offset for the fixed navbar */
+  overflow: hidden;
+}
+
+/* The backdrop image, positioned absolutely to fill the hero */
+.hero-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  /* Gradient overlay: fades from transparent at top to dark at bottom */
+  /* This ensures text at the bottom is readable */
+}
+
+/* Additional gradient overlay on top of the backdrop */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 15, 0.3) 0%,
+    rgba(10, 10, 15, 0.5) 40%,
+    rgba(10, 10, 15, 0.85) 75%,
+    var(--bg-primary) 100%
+  );
+  /* Also add a left-to-right gradient for the text area */
+}
+
+/* Content overlay (title, overview, buttons) */
+.hero-content {
+  position: relative;
+  z-index: 2; /* Above the gradient overlay */
+  max-width: 650px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Hero movie title */
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Hero movie overview/description */
+.hero-content p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  /* Clamp to 3 lines max */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Hero action buttons container */
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   6. BUTTONS
+   --------------------------------------------------------------------------
+   Multiple button styles: primary (filled gradient), secondary (outline),
+   and icon-only buttons.
+   -------------------------------------------------------------------------- */
+
+/* Base button styles shared by all buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Primary button — gradient accent background */
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #7c3aed);
+  color: white;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.45);
+  filter: brightness(1.1);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary button — outline style */
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-glass);
+  border-color: var(--accent);
+  color: var(--accent-light);
+}
+
+/* Danger button — red for destructive actions */
+.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--danger);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+/* Icon-only button (circular) */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+
+/* Watchlist button special states */
+.btn-watchlist {
+  gap: 8px;
+}
+
+.btn-watchlist.in-watchlist {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.btn-watchlist.in-watchlist:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+
+/* --------------------------------------------------------------------------
+   7. SECTION & MOVIE GRID
+   --------------------------------------------------------------------------
+   Sections contain movie grids. The grid uses CSS Grid with auto-fill
+   to create a responsive layout that adapts to screen width.
+   -------------------------------------------------------------------------- */
+
+/* Generic section wrapper */
+.section {
+  padding: 2rem 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Section title with an accent left border */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-left: 16px;
+  border-left: 4px solid var(--accent);
+  color: var(--text-primary);
+}
+
+/* The movie grid — auto-fills columns based on available width */
+.movie-grid {
+  display: grid;
+  /* auto-fill: create as many 200px columns as possible */
+  /* minmax(200px, 1fr): each column is at least 200px, at most equal share */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   8. MOVIE CARDS
+   --------------------------------------------------------------------------
+   Each movie in the grid is displayed as a card with a poster image
+   and an overlay showing the title, year, and rating.
+   -------------------------------------------------------------------------- */
+.movie-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  transition: var(--transition);
+  /* Maintain a movie poster aspect ratio (roughly 2:3) */
+  aspect-ratio: 2 / 3;
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+/* Stagger the animation delay for each card */
+.movie-card:nth-child(1) { animation-delay: 0s; }
+.movie-card:nth-child(2) { animation-delay: 0.05s; }
+.movie-card:nth-child(3) { animation-delay: 0.1s; }
+.movie-card:nth-child(4) { animation-delay: 0.15s; }
+.movie-card:nth-child(5) { animation-delay: 0.2s; }
+.movie-card:nth-child(6) { animation-delay: 0.25s; }
+.movie-card:nth-child(7) { animation-delay: 0.3s; }
+.movie-card:nth-child(8) { animation-delay: 0.35s; }
+.movie-card:nth-child(9) { animation-delay: 0.4s; }
+.movie-card:nth-child(10) { animation-delay: 0.45s; }
+
+/* Hover effect: slight scale up with a glowing border */
+.movie-card:hover {
+  transform: scale(1.03);
+  border-color: var(--accent-glow);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+}
+
+/* The poster image fills the entire card */
+.movie-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.movie-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Rating badge in the top-right corner */
+.movie-card .rating-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+/* Info overlay at the bottom of the card */
+.movie-card .card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem 1rem 1rem;
+  /* Gradient from transparent to dark — makes text readable on any poster */
+  background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.7) 50%, transparent 100%);
+  z-index: 2;
+}
+
+/* Movie title on the card */
+.movie-card .card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  /* Clamp title to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Year text on the card */
+.movie-card .card-year {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Remove button overlay (used in watchlist) */
+.movie-card .remove-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239, 68, 68, 0.85);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+}
+
+/* Show the remove button on card hover */
+.movie-card:hover .remove-btn {
+  opacity: 1;
+}
+
+.movie-card .remove-btn:hover {
+  background: var(--danger);
+  transform: scale(1.15);
+}
+
+/* Fallback poster (when no image is available) */
+.poster-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-secondary), #1a1a2e);
+  color: var(--text-muted);
+  font-size: 3rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. MOVIE DETAIL PAGE
+   --------------------------------------------------------------------------
+   The movie.html page layout: backdrop header, poster + info, cast, reviews.
+   -------------------------------------------------------------------------- */
+
+/* Backdrop header area */
+.movie-header {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem;
+  margin-top: 70px; /* Offset for fixed navbar */
+}
+
+/* Backdrop image behind the header */
+.movie-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center top;
+}
+
+/* Gradient overlay on the backdrop */
+.movie-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 15, 0.4) 0%,
+    rgba(10, 10, 15, 0.6) 40%,
+    rgba(10, 10, 15, 0.9) 75%,
+    var(--bg-primary) 100%
+  );
+}
+
+/* Container for poster + movie info, side by side */
+.movie-detail {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 2.5rem;
+  max-width: 1200px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* The poster image on the detail page */
+.movie-poster {
+  flex-shrink: 0;
+  width: 280px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
+}
+
+.movie-poster img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Movie info text on the right of the poster */
+.movie-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.movie-info h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+
+/* Meta info line (year • runtime • rating) */
+.movie-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.movie-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Separator dot between meta items */
+.movie-meta .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+/* TMDB vote average badge */
+.vote-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Genre pill badges */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.genre-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--accent-light);
+  transition: var(--transition);
+}
+
+.genre-pill:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--accent);
+}
+
+/* Overview text on the detail page */
+.movie-overview {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  max-width: 700px;
+}
+
+/* Action buttons row under movie info */
+.movie-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   10. CINETALE METER
+   --------------------------------------------------------------------------
+   The custom rating system with 4 tiers: Skip, Time Pass, Go For It, Perfection.
+   Each tier has its own color and is displayed as a styled radio button.
+   -------------------------------------------------------------------------- */
+.meter-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+}
+
+/* Container for the community rating display */
+.community-meter {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.community-meter h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
+}
+
+/* The 4 meter options displayed in a row */
+.meter-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Each meter option (radio button replacement) */
+.meter-option {
+  position: relative;
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Hide the actual radio input */
+.meter-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The visible label that looks like a button */
+.meter-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.meter-option label:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Emoji icon for each rating */
+.meter-option .meter-icon {
+  font-size: 1.8rem;
+}
+
+/* Rating label text */
+.meter-option .meter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Count of votes for each tier */
+.meter-option .meter-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* === Individual tier colors === */
+
+/* Skip — Red */
+.meter-option.skip label {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.meter-option.skip input:checked + label {
+  border-color: var(--danger);
+  background: rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+.meter-option.skip .meter-label { color: var(--danger); }
+
+/* Time Pass — Amber */
+.meter-option.timepass label {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.meter-option.timepass input:checked + label {
+  border-color: var(--warning);
+  background: rgba(245, 158, 11, 0.1);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+.meter-option.timepass .meter-label { color: var(--warning); }
+
+/* Go For It — Green */
+.meter-option.goforit label {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+.meter-option.goforit input:checked + label {
+  border-color: var(--success);
+  background: rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+.meter-option.goforit .meter-label { color: var(--success); }
+
+/* Perfection — Gold */
+.meter-option.perfection label {
+  border-color: rgba(251, 191, 36, 0.2);
+}
+.meter-option.perfection input:checked + label {
+  border-color: var(--gold);
+  background: rgba(251, 191, 36, 0.1);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+}
+.meter-option.perfection .meter-label { color: var(--gold); }
+
+/* The big community verdict label */
+.community-verdict {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.community-verdict .verdict-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.community-verdict .verdict-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+
+/* --------------------------------------------------------------------------
+   11. REVIEWS
+   --------------------------------------------------------------------------
+   User reviews are displayed as glassmorphism cards with author, rating,
+   content, and date. The review form lets users submit new reviews.
+   -------------------------------------------------------------------------- */
+
+/* Reviews container */
+.reviews-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+}
+
+/* Review form container */
+.review-form-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.review-form-container h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Form group: label + input wrapper */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+/* Text inputs and textareas */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
+  outline: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Individual review card */
+.review-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.4s ease-out both;
+  transition: var(--transition);
+}
+
+.review-card:hover {
+  border-color: var(--accent-glow);
+}
+
+/* Top row of the review card: author + rating */
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Author avatar (generated from initials) */
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.review-author-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Rating badge on the review card */
+.review-rating {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Color-coded rating badges */
+.review-rating.skip {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.review-rating.timepass {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.review-rating.goforit {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.review-rating.perfection {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Review content text */
+.review-content {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* Delete review button */
+.review-delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: var(--transition);
+  margin-top: 0.75rem;
+}
+
+.review-delete-btn:hover {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* No reviews message */
+.no-reviews {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. CAST SECTION
+   --------------------------------------------------------------------------
+   Horizontal scrollable grid of cast member cards with photos.
+   -------------------------------------------------------------------------- */
+.cast-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+}
+
+.cast-section h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  padding-left: 16px;
+  border-left: 4px solid var(--accent);
+}
+
+/* Horizontally scrollable container for cast cards */
+.cast-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: thin;
+}
+
+/* Individual cast member card */
+.cast-card {
+  flex-shrink: 0;
+  width: 130px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.cast-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Cast member photo */
+.cast-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  transition: var(--transition);
+}
+
+.cast-card:hover .cast-photo {
+  border-color: var(--accent);
+}
+
+.cast-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fallback when no cast photo is available */
+.cast-photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-secondary), #1e1e2e);
+  color: var(--text-muted);
+  font-size: 2rem;
+}
+
+/* Cast member name */
+.cast-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* Character name */
+.cast-character {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   13. WATCHLIST PAGE
+   --------------------------------------------------------------------------
+   Specific styles for the watchlist page, including the page header
+   and empty state display.
+   -------------------------------------------------------------------------- */
+.page-header {
+  padding: 2rem 3rem;
+  padding-top: calc(70px + 2rem); /* Account for fixed navbar */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   14. EMPTY STATE
+   --------------------------------------------------------------------------
+   Shown when the watchlist (or any list) has no items.
+   Centered message with a large emoji icon.
+   -------------------------------------------------------------------------- */
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  max-width: 400px;
+  margin: 0 auto 1.5rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   15. LOADING SPINNER
+   --------------------------------------------------------------------------
+   A pure CSS spinner animation shown while data is being fetched.
+   -------------------------------------------------------------------------- */
+.loading {
+  display: none; /* Hidden by default, shown via JS */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 15, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The spinner circle */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Hidden state for loading overlay */
+.loading.hidden {
+  display: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   16. TOAST NOTIFICATION
+   --------------------------------------------------------------------------
+   A small notification that slides in from the bottom-right when an action
+   occurs (e.g., "Added to watchlist"). Auto-dismisses after 3 seconds.
+   -------------------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 14px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  /* Start hidden and off-screen */
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(10px);
+  max-width: 350px;
+}
+
+/* When the toast is visible */
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* --------------------------------------------------------------------------
+   17. FOOTER
+   --------------------------------------------------------------------------
+   Simple centered footer at the bottom of every page.
+   -------------------------------------------------------------------------- */
+.footer {
+  text-align: center;
+  padding: 2.5rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.footer a {
+  color: var(--accent-light);
+  transition: var(--transition);
+}
+
+.footer a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+
+/* --------------------------------------------------------------------------
+   18. KEYFRAME ANIMATIONS
+   --------------------------------------------------------------------------
+   Reusable animations used throughout the app.
+   -------------------------------------------------------------------------- */
+
+/* Fade in from transparent */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade in while sliding up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide up from below (for toasts, modals) */
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Pulse effect (for attention) */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Spin (for the loading spinner) */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Card fade out (for remove animations) */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   19. UTILITY CLASSES
+   --------------------------------------------------------------------------
+   Reusable helper classes for common patterns.
+   -------------------------------------------------------------------------- */
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* Fade-out class added via JS for remove animation */
+.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+
+/* --------------------------------------------------------------------------
+   20. RESPONSIVE DESIGN
+   --------------------------------------------------------------------------
+   Media queries adapt the layout for tablets and mobile phones.
+   -------------------------------------------------------------------------- */
+
+/* ===== Tablet (max-width: 768px) ===== */
+@media (max-width: 768px) {
+  /* Navbar: stack vertically or shrink */
+  .navbar {
+    padding: 0 1rem;
+    gap: 0.5rem;
+  }
+
+  .search-container {
+    flex: 1;
+    margin: 0 0.75rem;
+  }
+
+  .nav-links {
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Hero: shorter, smaller text */
+  .hero {
+    height: 55vh;
+    min-height: 380px;
+    padding: 2rem;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+
+  /* Sections */
+  .section {
+    padding: 1.5rem;
+  }
+
+  /* Movie grid: smaller minimum column width */
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  /* Movie detail: stack poster and info vertically */
+  .movie-detail {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .movie-poster {
+    width: 200px;
+  }
+
+  .movie-info h1 {
+    font-size: 1.8rem;
+  }
+
+  .movie-meta {
+    justify-content: center;
+  }
+
+  .genres {
+    justify-content: center;
+  }
+
+  .movie-overview {
+    text-align: left;
+  }
+
+  .movie-actions {
+    justify-content: center;
+  }
+
+  /* Meter options: 2 per row */
+  .meter-options {
+    flex-wrap: wrap;
+  }
+
+  .meter-option {
+    min-width: calc(50% - 8px);
+  }
+
+  /* Sections padding */
+  .meter-section,
+  .reviews-section,
+  .cast-section {
+    padding: 1.5rem;
+  }
+
+  .page-header {
+    padding: 1.5rem;
+    padding-top: calc(70px + 1.5rem);
+  }
+}
+
+/* ===== Mobile (max-width: 480px) ===== */
+@media (max-width: 480px) {
+  /* Navbar: logo only, hide text links on very small screens */
+  .navbar {
+    height: 60px;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .search-container {
+    margin: 0 0.5rem;
+  }
+
+  #searchInput {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .nav-link span {
+    display: none; /* Hide link text, show only emoji */
+  }
+
+  /* Hero */
+  .hero {
+    height: 50vh;
+    min-height: 320px;
+    padding: 1.5rem;
+  }
+
+  .hero-content h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-content p {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+
+  /* Grid: 2 columns on mobile */
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  /* Movie detail */
+  .movie-header {
+    min-height: 50vh;
+    padding: 1.5rem;
+  }
+
+  .movie-poster {
+    width: 160px;
+  }
+
+  .movie-info h1 {
+    font-size: 1.4rem;
+  }
+
+  /* Review form */
+  .review-form-container {
+    padding: 1.25rem;
+  }
+
+  /* Toast */
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: none;
+    text-align: center;
+  }
+
+  /* Page header */
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+}
