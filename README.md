@@ -151,4 +151,3 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Credits
 
 - Movie data provided by [TMDB](https://www.themoviedb.org/)
-- Inspired by [Moctale.in](https://www.moctale.in/)
