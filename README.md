@@ -1,4 +1,4 @@
-# 🎬 Cinetale — Movie Discovery Platform
+# Cinetale — Movie Discovery Platform
 
 A beginner-friendly movie discovery and review platform built with **HTML, CSS, JavaScript, Node.js, Express, and MongoDB**.
 
@@ -6,30 +6,34 @@ Discover trending movies, search for your favorites, write reviews using the uni
 
 ---
 
-## ✨ Features
+## Features
 
-- 🏠 **Home Page** — Hero banner with trending movies grid
-- 🔍 **Search** — Instant search with debounced input
-- 🎬 **Movie Details** — Full info with poster, backdrop, genres, cast, and ratings
-- 🎯 **Cinetale Meter** — Rate movies as: Skip 💀 | Time Pass 🍿 | Go For It 🎬 | Perfection 👑
-- 📝 **Reviews** — Write, read, and delete movie reviews
-- 📋 **Watchlist** — Save movies to watch later
-- 🌙 **Premium Dark Theme** — Stunning dark UI with violet accents and glassmorphism
+- **User Authentication** — Secure login/register with JWT and bcrypt
+- **Home Page** — Hero banner with trending movies and TV shows grid
+- **Multi-Search** — Instant search across both movies and TV shows
+- **Detailed Info** — Full info with poster, backdrop, genres, cast, and ratings for movies and TV
+- **Star Ratings** — Rate content from 1 to 5 stars
+- **Reviews** — Write, read, and delete your reviews (auth required)
+- **Personal Watchlist** — Save movies and TV shows to watch later
+- ️ **Favorites** — Keep track of your favorite content
+- **User Profile** — View your stats and update your display name
+- **Premium Dark Theme** — Stunning dark UI with violet accents and glassmorphism
 
 ---
 
-## 🛠️ Tech Stack
+## ️ Tech Stack
 
-| Layer      | Technology             |
+| Layer | Technology |
 |------------|------------------------|
-| Frontend   | HTML, CSS, JavaScript  |
-| Backend    | Node.js + Express.js   |
-| Database   | MongoDB (Mongoose)     |
-| Movie Data | TMDB API               |
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Node.js + Express.js |
+| Database | MongoDB (Mongoose) |
+| Auth | JWT (jsonwebtoken), bcryptjs |
+| Data | TMDB API |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -60,7 +64,7 @@ cp .env.example .env
 npm start
 ```
 
-Then open **http://localhost:3000** in your browser! 🎉
+Then open **http://localhost:3000** in your browser! 
 
 ### Development Mode
 
@@ -71,68 +75,93 @@ npm run dev
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 cinetale/
-├── server.js              # Express server entry point
-├── package.json           # Dependencies & scripts
-├── .env.example           # Environment variables template
-├── .gitignore             # Files excluded from git
+├── server.js # Express server entry point
+├── package.json # Dependencies & scripts
+├── .env.example # Environment variables template
+├── .gitignore # Files excluded from git
 │
 ├── models/
-│   ├── Review.js          # Review schema (movieId, author, content, rating)
-│   └── Watchlist.js       # Watchlist schema (movieId, movieTitle, posterPath)
+│ ├── User.js # User schema (name, email, password)
+│ ├── Review.js # Review schema linked to user
+│ ├── Watchlist.js # Watchlist schema linked to user
+│ └── Favorite.js # Favorites schema linked to user
+│
+├── middleware/
+│ └── auth.js # JWT verification middleware
 │
 ├── routes/
-│   ├── movies.js          # TMDB proxy routes (trending, search, details)
-│   ├── reviews.js         # Review CRUD routes
-│   └── watchlist.js       # Watchlist routes
+│ ├── auth.js # User registration, login, profile
+│ ├── movies.js # TMDB proxy routes for movies
+│ ├── tv.js # TMDB proxy routes for TV shows
+│ ├── reviews.js # Review CRUD routes
+│ ├── watchlist.js # Watchlist routes
+│ └── favorites.js # Favorites routes
 │
-└── public/                # Static frontend files
-    ├── index.html         # Home page
-    ├── movie.html         # Movie detail page
-    ├── watchlist.html     # Watchlist page
-    ├── css/
-    │   └── style.css      # Complete dark theme styles
-    └── js/
-        ├── app.js         # Home page logic
-        ├── movie.js       # Movie detail page logic
-        └── watchlist.js   # Watchlist page logic
+└── public/ # Static frontend files
+ ├── index.html # Home page
+ ├── movie.html # Movie/TV detail page
+ ├── watchlist.html # Watchlist page
+ ├── profile.html # User profile page
+ ├── login.html # Login page
+ ├── register.html # Registration page
+ ├── 404.html # 404 Error page
+ ├── css/
+ │ └── style.css # Complete dark theme styles
+ └── js/
+ ├── auth.js # Shared auth utilities
+ ├── app.js # Home page logic
+ ├── movie.js # Movie/TV detail page logic
+ ├── watchlist.js # Watchlist page logic
+ └── profile.js # Profile page logic
 ```
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
-| Method   | Endpoint                    | Description                 |
+| Method | Endpoint | Description |
 |----------|-----------------------------|-----------------------------|
-| `GET`    | `/api/movies/trending`      | Get trending movies         |
-| `GET`    | `/api/movies/search?q=...`  | Search movies by title      |
-| `GET`    | `/api/movies/:id`           | Get movie details + cast    |
-| `GET`    | `/api/reviews/:movieId`     | Get reviews for a movie     |
-| `POST`   | `/api/reviews`              | Create a new review         |
-| `DELETE` | `/api/reviews/:id`          | Delete a review             |
-| `GET`    | `/api/watchlist`            | Get all watchlist items     |
-| `POST`   | `/api/watchlist`            | Add to watchlist            |
-| `DELETE` | `/api/watchlist/:movieId`   | Remove from watchlist       |
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login user |
+| `GET` | `/api/auth/me` | Get current user profile |
+| `PUT` | `/api/auth/me` | Update user name |
+| `GET` | `/api/movies/trending` | Get trending movies |
+| `GET` | `/api/movies/search?q=...` | Search movies by title |
+| `GET` | `/api/movies/:id` | Get movie details + cast |
+| `GET` | `/api/tv/trending` | Get trending TV shows |
+| `GET` | `/api/tv/search?q=...` | Search TV shows by title |
+| `GET` | `/api/tv/:id` | Get TV details + cast |
+| `GET` | `/api/reviews/:movieId` | Get reviews for a media |
+| `POST` | `/api/reviews` | Create a new review (Auth) |
+| `DELETE` | `/api/reviews/:id` | Delete a review (Auth) |
+| `GET` | `/api/watchlist` | Get user's watchlist (Auth) |
+| `POST` | `/api/watchlist` | Add to watchlist (Auth) |
+| `DELETE` | `/api/watchlist/:movieId` | Remove from watchlist (Auth)|
+| `GET` | `/api/favorites` | Get user's favorites (Auth) |
+| `POST` | `/api/favorites` | Add to favorites (Auth) |
+| `DELETE` | `/api/favorites/:mediaId` | Remove from favorites (Auth)|
 
 ---
 
-## 🎯 Cinetale Meter
+## Rating System
 
-Instead of boring star ratings, Cinetale uses a fun 4-tier rating system:
+Cinetale uses a simple 1–5 star rating system:
 
-| Rating       | Emoji | Meaning                        |
-|--------------|-------|--------------------------------|
-| **Skip**         | 💀    | Don't bother watching          |
-| **Time Pass**    | 🍿    | Watch if you have nothing else |
-| **Go For It**    | 🎬    | Worth watching, recommended!   |
-| **Perfection**   | 👑    | A masterpiece, must watch!     |
+| Stars | Meaning |
+|-------|--------------------------------|
+| ★☆☆☆☆ | Bad — don't bother |
+| ★★☆☆☆ | Below average |
+| ★★★☆☆ | Average — decent watch |
+| ★★★★☆ | Great — recommended! |
+| ★★★★★ | Masterpiece — must watch! |
 
 ---
 
-## 🎨 Design
+## Design
 
 - **Dark theme** with violet (#8b5cf6) accent colors
 - **Glassmorphism** effects with backdrop blur
@@ -142,12 +171,7 @@ Instead of boring star ratings, Cinetale uses a fun 4-tier rating system:
 
 ---
 
-## 📜 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 🙏 Credits
+## Credits
 
 - Movie data provided by [TMDB](https://www.themoviedb.org/)

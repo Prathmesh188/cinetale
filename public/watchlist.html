@@ -1,103 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <!-- Character encoding -->
-  <meta charset="UTF-8">
+     <!-- Character encoding -->
+     <meta charset="UTF-8">
 
-  <!-- Responsive viewport for mobile devices -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Responsive viewport for mobile devices -->
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Page title -->
-  <title>My Watchlist — Cinetale</title>
+     <!-- Page title -->
+     <title>My Watchlist — Cinetale</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+     <!-- Google Fonts -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-  <!-- Our CSS stylesheet -->
-  <link rel="stylesheet" href="/css/style.css">
+     <!-- Our CSS stylesheet -->
+     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-  <!-- =======================================================================
-       NAVIGATION BAR
-       =======================================================================
-       Same navbar as other pages. Notice the "active" class is on the
-       Watchlist link this time to show which page we're on.
-       ======================================================================= -->
-  <nav class="navbar" id="navbar">
-    <a href="/" class="logo">🎬 Cinetale</a>
-    <div class="search-container">
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Search movies..."
-        autocomplete="off"
-        aria-label="Search movies"
-      >
-    </div>
-    <div class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <!-- "active" class is on Watchlist since we're on that page -->
-      <a href="/watchlist.html" class="nav-link active">📋 Watchlist</a>
-    </div>
-  </nav>
+     <!-- =======================================================================
+ NAVIGATION BAR
+ =======================================================================
+ Same navbar as other pages. Notice the "active" class is on the
+ Watchlist link this time to show which page we're on.
+ ======================================================================= -->
+     <nav class="navbar" id="navbar">
+          <a href="/" class="logo"> Cinetale</a>
+          <div class="search-container">
+               <input type="text" id="searchInput" placeholder="Search movies or TV shows..." autocomplete="off"
+                    aria-label="Search movies or TV shows">
+          </div>
+          <div class="nav-links">
+               <a href="/" class="nav-link">Home</a>
+               <!-- "active" class is on Watchlist since we're on that page -->
+               <a href="/watchlist.html" class="nav-link active"> Watchlist</a>
+               <a href="/favorites.html" class="nav-link"> Favorites</a>
+               <a href="/login.html" class="nav-link" id="loginLink">Login</a>
+               <a href="/profile.html" class="nav-link" id="profileLink" style="display:none;"> Profile</a>
+               <button class="nav-link" id="logoutBtn" style="display:none;">Logout</button>
+          </div>
+     </nav>
 
-  <!-- =======================================================================
-       PAGE HEADER
-       =======================================================================
-       Title and subtitle for the watchlist page.
-       ======================================================================= -->
-  <div class="page-header">
-    <h1>📋 My Watchlist</h1>
-    <p>Movies you've saved to watch later</p>
-  </div>
+     <!-- =======================================================================
+ PAGE HEADER
+ =======================================================================
+ Title and subtitle for the watchlist page.
+ ======================================================================= -->
+     <div class="page-header">
+          <h1> My Watchlist</h1>
+          <p>Movies and TV shows you've saved to watch later</p>
+     </div>
 
-  <!-- =======================================================================
-       WATCHLIST GRID
-       =======================================================================
-       The same grid layout as the home page, but populated with saved movies.
-       Each card has a remove button (×) that appears on hover.
-       ======================================================================= -->
-  <section class="section" id="watchlistSection">
-    <div class="movie-grid" id="watchlistGrid">
-      <!-- Movie cards are inserted here by JavaScript -->
-    </div>
-  </section>
+     <!-- =======================================================================
+ WATCHLIST GRID
+ =======================================================================
+ The same grid layout as the home page, but populated with saved movies.
+ Each card has a remove button (×) that appears on hover.
+ ======================================================================= -->
+     <section class="section" id="watchlistSection">
+          <div class="movie-grid" id="watchlistGrid">
+               <!-- Movie cards are inserted here by JavaScript -->
+          </div>
+     </section>
 
-  <!-- =======================================================================
-       EMPTY STATE
-       =======================================================================
-       Shown when the watchlist has no movies. Hidden when there are items.
-       ======================================================================= -->
-  <div class="empty-state" id="emptyState" style="display: none;">
-    <div class="empty-icon">🎬</div>
-    <h3>Your watchlist is empty</h3>
-    <p>Start exploring movies and add them to your watchlist to keep track of what you want to watch!</p>
-    <a href="/" class="btn btn-primary">Browse Movies</a>
-  </div>
+     <!-- =======================================================================
+ EMPTY STATE
+ =======================================================================
+ Shown when the watchlist has no movies. Hidden when there are items.
+ ======================================================================= -->
+     <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-icon"></div>
+          <h3>Your watchlist is empty</h3>
+          <p>Start exploring movies and TV shows and add them to your watchlist to keep track of what you want to watch!
+          </p>
+          <a href="/" class="btn btn-primary">Browse Movies & TV Shows</a>
+     </div>
 
-  <!-- =======================================================================
-       LOADING SPINNER
-       ======================================================================= -->
-  <div class="loading hidden" id="loading">
-    <div class="spinner"></div>
-  </div>
+     <!-- =======================================================================
+ LOADING SPINNER
+ ======================================================================= -->
+     <div class="loading hidden" id="loading">
+          <div class="spinner"></div>
+     </div>
 
-  <!-- =======================================================================
-       TOAST NOTIFICATION
-       ======================================================================= -->
-  <div class="toast" id="toast"></div>
+     <!-- =======================================================================
+ TOAST NOTIFICATION
+ ======================================================================= -->
+     <div class="toast" id="toast"></div>
 
-  <!-- =======================================================================
-       FOOTER
-       ======================================================================= -->
-  <footer class="footer">
-    <p>Made with ❤️ by Cinetale | Powered by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDB</a></p>
-  </footer>
 
-  <!-- Watchlist page JavaScript -->
-  <script src="/js/watchlist.js"></script>
+
+     <!-- Shared auth utilities -->
+     <script src="/js/auth.js"></script>
+     <!-- Watchlist page JavaScript -->
+     <script src="/js/watchlist.js"></script>
 </body>
+
 </html>

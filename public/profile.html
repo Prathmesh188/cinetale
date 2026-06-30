@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <!-- Character encoding -->
+ <meta charset="UTF-8">
+
+ <!-- Responsive viewport for mobile devices -->
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- Page title -->
+ <title>My Profile — Cinetale</title>
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+ <!-- Our CSS stylesheet -->
+ <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+ <!-- =======================================================================
+ NAVIGATION BAR
+ =======================================================================
+ Same navbar as other pages. Profile link is active since we're here.
+ ======================================================================= -->
+ <nav class="navbar" id="navbar">
+ <a href="/" class="logo"> Cinetale</a>
+ <div class="search-container">
+ <input
+ type="text"
+ id="searchInput"
+ placeholder="Search movies or TV shows..."
+ autocomplete="off"
+ aria-label="Search movies or TV shows"
+ >
+ </div>
+ <div class="nav-links">
+ <a href="/" class="nav-link">Home</a>
+ <a href="/watchlist.html" class="nav-link"> Watchlist</a>
+      <a href="/favorites.html" class="nav-link"> Favorites</a>
+ <a href="/login.html" class="nav-link" id="loginLink">Login</a>
+ <a href="/profile.html" class="nav-link" id="profileLink" style="display:none;"> Profile</a>
+ <button class="nav-link" id="logoutBtn" style="display:none;">Logout</button>
+ </div>
+ </nav>
+
+ <!-- =======================================================================
+ PAGE HEADER
+ ======================================================================= -->
+ <div class="page-header">
+ <h1> My Profile</h1>
+ <p>Manage your account and see your stats</p>
+ </div>
+
+ <!-- =======================================================================
+ PROFILE CARD
+ =======================================================================
+ Glassmorphism card showing the user's avatar (initials), name, email,
+ and the date they joined. Also includes an inline edit-name section.
+ ======================================================================= -->
+ <div class="profile-card">
+ <!-- Avatar circle with user initials (filled by JS) -->
+ <div class="profile-avatar" id="profileAvatar">?</div>
+
+ <!-- User name -->
+ <h2 id="profileName">Loading...</h2>
+
+ <!-- User email -->
+ <p class="text-secondary" id="profileEmail"></p>
+
+ <!-- Member since date -->
+ <p class="text-muted" id="profileDate"></p>
+
+ <!-- Edit name section — inline input + save button -->
+ <div class="profile-edit">
+ <input
+ type="text"
+ id="editNameInput"
+ class="form-input"
+ placeholder="New name..."
+ maxlength="50"
+ >
+ <button class="btn btn-primary btn-sm" id="saveNameBtn">Save Name</button>
+ </div>
+ </div>
+
+ <!-- =======================================================================
+ PROFILE STATS
+ =======================================================================
+ Shows the user's activity at a glance: how many movies in watchlist,
+ TV shows in watchlist, and total favorites.
+ ======================================================================= -->
+ <div class="profile-stats">
+ <!-- Stat: Movies in Watchlist -->
+ <div class="stat-card">
+ <div class="stat-value" id="statMovies">—</div>
+ <div class="stat-label">Movies in Watchlist</div>
+ </div>
+
+ <!-- Stat: TV Shows in Watchlist -->
+ <div class="stat-card">
+ <div class="stat-value" id="statTvShows">—</div>
+ <div class="stat-label">TV Shows in Watchlist</div>
+ </div>
+
+ <!-- Stat: Total Favorites -->
+ <div class="stat-card">
+ <div class="stat-value" id="statFavorites">—</div>
+ <div class="stat-label">Total Favorites</div>
+ </div>
+ </div>
+
+ <!-- =======================================================================
+ MY REVIEWS
+ ======================================================================= -->
+ <section class="section" id="reviewsSection">
+ <h2 class="section-title">My Reviews</h2>
+ <div class="reviews-list" id="myReviewsList">
+ <!-- Reviews are inserted here dynamically by JS -->
+ </div>
+ </section>
+
+ <!-- =======================================================================
+ LOADING SPINNER
+ ======================================================================= -->
+ <div class="loading hidden" id="loading">
+ <div class="spinner"></div>
+ </div>
+
+ <!-- =======================================================================
+ TOAST NOTIFICATION
+ ======================================================================= -->
+ <div class="toast" id="toast"></div>
+
+ 
+
+ <!-- Shared auth utilities (loaded FIRST) -->
+ <script src="/js/auth.js"></script>
+
+ <!-- Profile page JavaScript -->
+ <script src="/js/profile.js"></script>
+</body>
+</html>

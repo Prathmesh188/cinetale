@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Character encoding -->
+  <meta charset="UTF-8">
+
+  <!-- Responsive viewport for mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Page title -->
+  <title>My Favorites — Cinetale</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Our CSS stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+  NAVIGATION BAR
+  ======================================================================= -->
+  <nav class="navbar" id="navbar">
+    <a href="/" class="logo"> Cinetale</a>
+    <div class="search-container">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search movies or TV shows..."
+        autocomplete="off"
+        aria-label="Search movies or TV shows"
+      >
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/watchlist.html" class="nav-link"> Watchlist</a>
+      <a href="/favorites.html" class="nav-link active"> Favorites</a>
+      <a href="/login.html" class="nav-link" id="loginLink">Login</a>
+      <a href="/profile.html" class="nav-link" id="profileLink" style="display:none;"> Profile</a>
+      <button class="nav-link" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+  </nav>
+
+  <!-- =======================================================================
+  PAGE HEADER
+  ======================================================================= -->
+  <div class="page-header">
+    <h1> My Favorites</h1>
+    <p>Movies and TV shows you loved</p>
+  </div>
+
+  <!-- =======================================================================
+  FAVORITES GRID
+  ======================================================================= -->
+  <section class="section" id="favoritesSection">
+    <div class="movie-grid" id="favoritesGrid">
+      <!-- Movie/TV cards are inserted here by JavaScript -->
+    </div>
+  </section>
+
+  <!-- =======================================================================
+  EMPTY STATE
+  ======================================================================= -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-icon"></div>
+    <h3>Your favorites list is empty</h3>
+    <p>Start exploring movies and TV shows and favorite the ones you love!</p>
+    <a href="/" class="btn btn-primary">Browse Movies & TV Shows</a>
+  </div>
+
+  <!-- =======================================================================
+  LOADING SPINNER
+  ======================================================================= -->
+  <div class="loading hidden" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- =======================================================================
+  TOAST NOTIFICATION
+  ======================================================================= -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Shared auth utilities -->
+  <script src="/js/auth.js"></script>
+  <!-- Favorites page JavaScript -->
+  <script src="/js/favorites.js"></script>
+</body>
+</html>

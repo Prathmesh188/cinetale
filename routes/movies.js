@@ -6,10 +6,10 @@
 // server, and our server calls the TMDB API.
 //
 // Why not call TMDB directly from the frontend?
-//   1. Security: Our API key stays on the server
-//      and is never exposed to the browser.
-//   2. Control: We can add caching, rate limiting,
-//      or transform the data before sending it.
+// 1. Security: Our API key stays on the server
+// and is never exposed to the browser.
+// 2. Control: We can add caching, rate limiting,
+// or transform the data before sending it.
 // ==============================================
 
 // Import Express and create a Router.
@@ -23,7 +23,7 @@ const router = express.Router();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 // Base URL for the TMDB API — all endpoints start with this
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_BASE_URL = 'https://api.tmdb.org/3';
 
 // ------------------------------------------
 // GET /api/movies/trending
@@ -35,39 +35,39 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 // Returns: A JSON object with a "results" array of movies
 
 router.get('/trending', async (req, res) => {
-  try {
-    // Build the TMDB API URL for trending movies.
-    // "trending/movie/week" gets movies trending this week.
-    const url = `${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}`;
+ try {
+ // Build the TMDB API URL for trending movies.
+ // "trending/movie/week" gets movies trending this week.
+ const url = `${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}`;
 
-    // Use the built-in fetch API (available in Node.js 18+)
-    // to make an HTTP GET request to the TMDB API.
-    const response = await fetch(url);
+ // Use the built-in fetch API (available in Node.js 18+)
+ // to make an HTTP GET request to the TMDB API.
+ const response = await fetch(url);
 
-    // Check if the response was successful (status 200-299)
-    if (!response.ok) {
-      // If TMDB returned an error, throw it so we can
-      // catch it below and send a proper error to the client.
-      throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
-    }
+ // Check if the response was successful (status 200-299)
+ if (!response.ok) {
+ // If TMDB returned an error, throw it so we can
+ // catch it below and send a proper error to the client.
+ throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
+ }
 
-    // Parse the response body as JSON.
-    // This converts the raw text into a JavaScript object.
-    const data = await response.json();
+ // Parse the response body as JSON.
+ // This converts the raw text into a JavaScript object.
+ const data = await response.json();
 
-    // Send the TMDB data back to our frontend as JSON.
-    // res.json() automatically sets the Content-Type header
-    // to application/json and stringifies the data.
-    res.json(data);
-  } catch (error) {
-    // If anything goes wrong (network error, TMDB down, etc.),
-    // log the error for debugging and send a 500 error response.
-    console.error('Error fetching trending movies:', error.message);
-    res.status(500).json({
-      error: 'Failed to fetch trending movies',
-      message: error.message,
-    });
-  }
+ // Send the TMDB data back to our frontend as JSON.
+ // res.json() automatically sets the Content-Type header
+ // to application/json and stringifies the data.
+ res.json(data);
+ } catch (error) {
+ // If anything goes wrong (network error, TMDB down, etc.),
+ // log the error for debugging and send a 500 error response.
+ console.error('Error fetching trending movies:', error.message);
+ res.status(500).json({
+ error: 'Failed to fetch trending movies',
+ message: error.message,
+ });
+ }
 });
 
 // ------------------------------------------
@@ -80,43 +80,43 @@ router.get('/trending', async (req, res) => {
 // Returns: A JSON object with a "results" array of matching movies
 
 router.get('/search', async (req, res) => {
-  try {
-    // req.query contains URL query parameters.
-    // For the URL "/search?q=batman", req.query.q = "batman"
-    const { q } = req.query;
+ try {
+ // req.query contains URL query parameters.
+ // For the URL "/search?q=batman", req.query.q = "batman"
+ const { q } = req.query;
 
-    // Validate that the user provided a search query.
-    // If "q" is empty or missing, send a 400 (Bad Request) error.
-    if (!q) {
-      return res.status(400).json({
-        error: 'Search query is required',
-        message: 'Please provide a search term using the "q" query parameter. Example: /api/movies/search?q=batman',
-      });
-    }
+ // Validate that the user provided a search query.
+ // If "q" is empty or missing, send a 400 (Bad Request) error.
+ if (!q) {
+ return res.status(400).json({
+ error: 'Search query is required',
+ message: 'Please provide a search term using the "q" query parameter. Example: /api/movies/search?q=batman',
+ });
+ }
 
-    // Build the TMDB search URL.
-    // encodeURIComponent() safely encodes the search query
-    // for use in a URL (e.g., spaces become %20).
-    const url = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}`;
+ // Build the TMDB search URL.
+ // encodeURIComponent() safely encodes the search query
+ // for use in a URL (e.g., spaces become %20).
+ const url = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(q)}`;
 
-    // Make the HTTP request to TMDB
-    const response = await fetch(url);
+ // Make the HTTP request to TMDB
+ const response = await fetch(url);
 
-    // Check if the response was successful
-    if (!response.ok) {
-      throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
-    }
+ // Check if the response was successful
+ if (!response.ok) {
+ throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
+ }
 
-    // Parse and send the response
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error searching movies:', error.message);
-    res.status(500).json({
-      error: 'Failed to search movies',
-      message: error.message,
-    });
-  }
+ // Parse and send the response
+ const data = await response.json();
+ res.json(data);
+ } catch (error) {
+ console.error('Error searching movies:', error.message);
+ res.status(500).json({
+ error: 'Failed to search movies',
+ message: error.message,
+ });
+ }
 });
 
 // ------------------------------------------
@@ -128,48 +128,48 @@ router.get('/search', async (req, res) => {
 //
 // The ":id" is a route parameter — it's a placeholder
 // that matches any value. For example:
-//   GET /api/movies/550 → req.params.id = "550"
+// GET /api/movies/550 → req.params.id = "550"
 //
 // Example: GET http://localhost:3000/api/movies/550
 // Returns: Detailed movie info including cast and crew
 
 router.get('/:id', async (req, res) => {
-  try {
-    // req.params contains route parameters.
-    // For the URL "/api/movies/550", req.params.id = "550"
-    const { id } = req.params;
+ try {
+ // req.params contains route parameters.
+ // For the URL "/api/movies/550", req.params.id = "550"
+ const { id } = req.params;
 
-    // Build the TMDB movie details URL.
-    // "append_to_response=credits" is a TMDB feature that
-    // lets us get the movie details AND its cast/crew info
-    // in a SINGLE API call instead of two separate calls.
-    const url = `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits`;
+ // Build the TMDB movie details URL.
+ // "append_to_response=credits" is a TMDB feature that
+ // lets us get the movie details AND its cast/crew info
+ // in a SINGLE API call instead of two separate calls.
+ const url = `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits`;
 
-    // Make the HTTP request to TMDB
-    const response = await fetch(url);
+ // Make the HTTP request to TMDB
+ const response = await fetch(url);
 
-    // Check if the response was successful
-    if (!response.ok) {
-      // If it's a 404, the movie ID doesn't exist in TMDB
-      if (response.status === 404) {
-        return res.status(404).json({
-          error: 'Movie not found',
-          message: `No movie found with ID: ${id}`,
-        });
-      }
-      throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
-    }
+ // Check if the response was successful
+ if (!response.ok) {
+ // If it's a 404, the movie ID doesn't exist in TMDB
+ if (response.status === 404) {
+ return res.status(404).json({
+ error: 'Movie not found',
+ message: `No movie found with ID: ${id}`,
+ });
+ }
+ throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
+ }
 
-    // Parse and send the response
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching movie details:', error.message);
-    res.status(500).json({
-      error: 'Failed to fetch movie details',
-      message: error.message,
-    });
-  }
+ // Parse and send the response
+ const data = await response.json();
+ res.json(data);
+ } catch (error) {
+ console.error('Error fetching movie details:', error.message);
+ res.status(500).json({
+ error: 'Failed to fetch movie details',
+ message: error.message,
+ });
+ }
 });
 
 // ------------------------------------------

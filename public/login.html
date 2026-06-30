@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <!-- Character encoding: UTF-8 supports all languages and emoji -->
+ <meta charset="UTF-8">
+
+ <!-- Responsive viewport: makes the page scale properly on mobile devices -->
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- Page title — shown in the browser tab -->
+ <title>Login — Cinetale</title>
+
+ <!-- SEO meta description -->
+ <meta name="description" content="Log in to your Cinetale account to write reviews, manage your watchlist, and more.">
+
+ <!-- Google Fonts: preconnect speeds up font loading -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+ <!-- Inter font — clean, modern, highly readable -->
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+ <!-- Our custom CSS stylesheet -->
+ <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+ <!-- =======================================================================
+ NAVIGATION BAR
+ =======================================================================
+ Same navbar as other pages for consistent navigation.
+ Login link is active since we're on the login page.
+ ======================================================================= -->
+ <nav class="navbar" id="navbar">
+ <a href="/" class="logo"> Cinetale</a>
+ <div class="search-container">
+ <input
+ type="text"
+ id="searchInput"
+ placeholder="Search movies or TV shows..."
+ autocomplete="off"
+ aria-label="Search movies or TV shows"
+ >
+ </div>
+ <div class="nav-links">
+ <a href="/" class="nav-link">Home</a>
+ <a href="/watchlist.html" class="nav-link"> Watchlist</a>
+      <a href="/favorites.html" class="nav-link"> Favorites</a>
+ <a href="/login.html" class="nav-link" id="loginLink">Login</a>
+ <a href="/profile.html" class="nav-link" id="profileLink" style="display:none;"> Profile</a>
+ <button class="nav-link" id="logoutBtn" style="display:none;">Logout</button>
+ </div>
+ </nav>
+
+ <!-- =======================================================================
+ LOGIN FORM
+ =======================================================================
+ A centered card with a glassmorphism style containing the login form.
+ Users enter their email and password to authenticate.
+ On success, the JWT token is saved and they're redirected home.
+ ======================================================================= -->
+ <div class="auth-container">
+ <h2>Welcome Back </h2>
+
+ <form id="loginForm">
+ <!-- Email input -->
+ <div class="form-group">
+ <label for="loginEmail">Email</label>
+ <input
+ type="email"
+ id="loginEmail"
+ class="form-input"
+ placeholder="Enter your email..."
+ required
+ >
+ </div>
+
+ <!-- Password input -->
+ <div class="form-group">
+ <label for="loginPassword">Password</label>
+ <input
+ type="password"
+ id="loginPassword"
+ class="form-input"
+ placeholder="Enter your password..."
+ required
+ >
+ </div>
+
+ <!-- Submit button — full width via CSS -->
+ <button type="submit" class="btn btn-primary">
+ Login
+ </button>
+ </form>
+
+ <!-- Link to register page for new users -->
+ <div class="auth-link">
+ Don't have an account? <a href="/register.html">Register</a>
+ </div>
+ </div>
+
+ <!-- =======================================================================
+ TOAST NOTIFICATION
+ =======================================================================
+ A small popup message at the bottom-right of the screen.
+ Used for feedback like "Login successful!" or error messages.
+ ======================================================================= -->
+ <div class="toast" id="toast"></div>
+
+ 
+
+ <!-- Shared auth utilities (loaded FIRST on every page) -->
+ <script src="/js/auth.js"></script>
+
+ <!-- =======================================================================
+ LOGIN HANDLER SCRIPT
+ =======================================================================
+ Handles the login form submission:
+ 1. Validates that both fields are filled
+ 2. Sends a POST request to /api/auth/login
+ 3. On success, saves the JWT token and redirects to home
+ 4. On failure, shows an error toast
+ ======================================================================= -->
+ <script>
+ /* ------------------------------------------------------------------
+ TOAST UTILITY (same pattern as other pages)
+ ------------------------------------------------------------------ */
+ const toastEl = document.getElementById('toast');
+
+ /**
+ * showToast(message)
+ * Displays a brief notification at the bottom-right of the screen.
+ *
+ * @param {string} message - The text to display
+ */
+ function showToast(message) {
+ toastEl.textContent = message;
+ toastEl.classList.add('show');
+ setTimeout(() => {
+ toastEl.classList.remove('show');
+ }, 3000);
+ }
+
+ /* ------------------------------------------------------------------
+ SEARCH REDIRECT
+ ------------------------------------------------------------------ */
+ const searchInput = document.getElementById('searchInput');
+ searchInput.addEventListener('keydown', (event) => {
+ if (event.key === 'Enter') {
+ const query = searchInput.value.trim();
+ if (query) {
+ window.location.href = `/?search=${encodeURIComponent(query)}`;
+ }
+ }
+ });
+
+ /* ------------------------------------------------------------------
+ LOGIN FORM SUBMISSION
+ ------------------------------------------------------------------ */
+ document.getElementById('loginForm').addEventListener('submit', async (e) => {
+ // Prevent the default form submission (which would reload the page)
+ e.preventDefault();
+
+ // Get the form values and trim whitespace
+ const email = document.getElementById('loginEmail').value.trim();
+ const password = document.getElementById('loginPassword').value;
+
+ // --- Validation ---
+ if (!email || !password) {
+ showToast('Please fill in all fields');
+ return;
+ }
+
+ try {
+ // Send login credentials to the backend
+ const response = await fetch('/api/auth/login', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ email, password })
+ });
+
+ const data = await response.json();
+
+ if (!response.ok) {
+ // Server returned an error (wrong password, user not found, etc.)
+ showToast(data.message || 'Login failed');
+ return;
+ }
+
+ // Success! Save the JWT token using our shared auth utility
+ setToken(data.token);
+ showToast('Login successful! ');
+
+ // Redirect to home page after a short delay so the user sees the toast
+ setTimeout(() => {
+ window.location.href = '/';
+ }, 1000);
+
+ } catch (error) {
+ console.error('Login error:', error);
+ showToast('Something went wrong. Please try again.');
+ }
+ });
+ </script>
+</body>
+</html>

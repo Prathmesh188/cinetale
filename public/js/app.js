@@ -1,7 +1,7 @@
 /* ==========================================================================
    CINETALE — Home Page JavaScript (app.js)
    ==========================================================================
-   This file handles all the logic for the home page (index.html):
+   This ile handles all the logic for the home page (index.html):
    - Fetching and displaying trending movies
    - Setting up the hero banner with the first trending movie
    - Search functionality with debounced input

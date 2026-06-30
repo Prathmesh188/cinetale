@@ -86,6 +86,15 @@ const reviewRoutes = require('./routes/reviews');
 // Watchlist routes - handles adding/removing watchlist items
 const watchlistRoutes = require('./routes/watchlist');
 
+// Auth routes - handles user registration and login
+const authRoutes = require('./routes/auth');
+
+// TV show routes - handles fetching TV show data from TMDB
+const tvRoutes = require('./routes/tv');
+
+// Favorites routes - handles user's favorite movies/shows
+const favoritesRoutes = require('./routes/favorites');
+
 // "Mount" the routes at specific URL prefixes.
 // This means all routes in movies.js will start with /api/movies
 // For example: GET /api/movies/trending, GET /api/movies/search
@@ -99,6 +108,28 @@ app.use('/api/reviews', reviewRoutes);
 // For example: GET /api/watchlist, POST /api/watchlist
 app.use('/api/watchlist', watchlistRoutes);
 
+// All auth routes start with /api/auth
+// For example: POST /api/auth/register, POST /api/auth/login
+app.use('/api/auth', authRoutes);
+
+// All TV show routes start with /api/tv
+// For example: GET /api/tv/trending, GET /api/tv/search
+app.use('/api/tv', tvRoutes);
+
+// All favorites routes start with /api/favorites
+// For example: GET /api/favorites, POST /api/favorites
+app.use('/api/favorites', favoritesRoutes);
+
+// ------------------------------------------
+// STEP 5.5: 404 Handler for Unknown Routes
+// ------------------------------------------
+// This MUST be after all other routes. If no route
+// above matched the request, this catches it and
+// serves our custom 404 page.
+app.use((req, res) => {
+ res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+});
+
 // ------------------------------------------
 // STEP 6: Connect to MongoDB
 // ------------------------------------------
@@ -111,48 +142,48 @@ app.use('/api/watchlist', watchlistRoutes);
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cinetale';
 
 mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    // This runs if the connection was successful
-    console.log('✅ Connected to MongoDB successfully!');
-    console.log(`📦 Database: ${MONGODB_URI}`);
+ .connect(MONGODB_URI)
+ .then(() => {
+ // This runs if the connection was successful
+ console.log(' Connected to MongoDB successfully!');
+ console.log(` Database: ${MONGODB_URI}`);
 
-    // ------------------------------------------
-    // STEP 7: Start the Server
-    // ------------------------------------------
-    // We only start listening for requests AFTER the
-    // database connection is established. This ensures
-    // our app doesn't try to read/write data before
-    // the database is ready.
-    app.listen(PORT, () => {
-      console.log('');
-      console.log('===========================================');
-      console.log('🎬 Cinetale Server is Running!');
-      console.log('===========================================');
-      console.log(`🌐 URL: http://localhost:${PORT}`);
-      console.log(`📡 API: http://localhost:${PORT}/api/movies/trending`);
-      console.log('===========================================');
-      console.log('');
-      console.log('Press Ctrl+C to stop the server.');
-    });
-  })
-  .catch((error) => {
-    // This runs if the connection failed.
-    // Common reasons: MongoDB isn't running, wrong URI,
-    // network issues, or invalid credentials.
-    console.error('');
-    console.error('❌ Failed to connect to MongoDB!');
-    console.error('-------------------------------------------');
-    console.error('Error:', error.message);
-    console.error('');
-    console.error('💡 Troubleshooting tips:');
-    console.error('   1. Make sure MongoDB is installed and running');
-    console.error('   2. Check your MONGODB_URI in the .env file');
-    console.error('   3. If using MongoDB Atlas, check your IP whitelist');
-    console.error('-------------------------------------------');
+ // ------------------------------------------
+ // STEP 7: Start the Server
+ // ------------------------------------------
+ // We only start listening for requests AFTER the
+ // database connection is established. This ensures
+ // our app doesn't try to read/write data before
+ // the database is ready.
+ app.listen(PORT, () => {
+ console.log('');
+ console.log('===========================================');
+ console.log(' Cinetale Server is Running!');
+ console.log('===========================================');
+ console.log(` URL: http://localhost:${PORT}`);
+ console.log(` API: http://localhost:${PORT}/api/movies/trending`);
+ console.log('===========================================');
+ console.log('');
+ console.log('Press Ctrl+C to stop the server.');
+ });
+ })
+ .catch((error) => {
+ // This runs if the connection failed.
+ // Common reasons: MongoDB isn't running, wrong URI,
+ // network issues, or invalid credentials.
+ console.error('');
+ console.error(' Failed to connect to MongoDB!');
+ console.error('-------------------------------------------');
+ console.error('Error:', error.message);
+ console.error('');
+ console.error(' Troubleshooting tips:');
+ console.error(' 1. Make sure MongoDB is installed and running');
+ console.error(' 2. Check your MONGODB_URI in the .env file');
+ console.error(' 3. If using MongoDB Atlas, check your IP whitelist');
+ console.error('-------------------------------------------');
 
-    // Exit the process with an error code (1 means error)
-    // because there's no point running the server without
-    // a database connection.
-    process.exit(1);
-  });
+ // Exit the process with an error code (1 means error)
+ // because there's no point running the server without
+ // a database connection.
+ process.exit(1);
+ });

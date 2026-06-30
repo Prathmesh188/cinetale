@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <!-- Character encoding: UTF-8 supports all languages and emoji -->
+ <meta charset="UTF-8">
+
+ <!-- Responsive viewport: makes the page scale properly on mobile devices -->
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- Page title — shown in the browser tab -->
+ <title>Page Not Found — Cinetale</title>
+
+ <!-- Google Fonts: preconnect speeds up font loading -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+ <!-- Inter font — clean, modern, highly readable -->
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+ <!-- Our custom CSS stylesheet -->
+ <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+ <!-- =======================================================================
+ NAVIGATION BAR
+ =======================================================================
+ Same navbar as other pages for consistent navigation.
+ No link has the "active" class since this isn't a real page.
+ ======================================================================= -->
+ <nav class="navbar" id="navbar">
+ <a href="/" class="logo"> Cinetale</a>
+ <div class="search-container">
+ <input
+ type="text"
+ id="searchInput"
+ placeholder="Search movies or TV shows..."
+ autocomplete="off"
+ aria-label="Search movies or TV shows"
+ >
+ </div>
+ <div class="nav-links">
+ <a href="/" class="nav-link">Home</a>
+ <a href="/watchlist.html" class="nav-link"> Watchlist</a>
+      <a href="/favorites.html" class="nav-link"> Favorites</a>
+ <a href="/login.html" class="nav-link" id="loginLink">Login</a>
+ <a href="/profile.html" class="nav-link" id="profileLink" style="display:none;"> Profile</a>
+ <button class="nav-link" id="logoutBtn" style="display:none;">Logout</button>
+ </div>
+ </nav>
+
+ <!-- =======================================================================
+ 404 ERROR CONTENT
+ =======================================================================
+ Centered message telling the user this page doesn't exist.
+ Includes a large emoji, a heading, a description, and a button
+ that takes them back to the home page.
+ ======================================================================= -->
+ <div class="error-page">
+ <div class="error-icon"></div>
+ <h1>Page Not Found</h1>
+ <p>The page you're looking for doesn't exist or has been moved.</p>
+ <a href="/" class="btn btn-primary">← Go Home</a>
+ </div>
+
+ 
+
+ <!-- Shared auth utilities (for navbar login/logout state) -->
+ <script src="/js/auth.js"></script>
+</body>
+</html>
