@@ -32,11 +32,16 @@ const heroDetailsBtn = document.getElementById('heroDetailsBtn');
 // Search elements
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
-const searchGrid = document.getElementById('searchGrid');
+const searchMovieGrid = document.getElementById('searchMovieGrid');
+const searchTvGrid = document.getElementById('searchTvGrid');
 
 // Trending section elements
 const trendingSection = document.getElementById('trendingSection');
 const trendingGrid = document.getElementById('trendingGrid');
+
+// TV section elements
+const tvSection = document.getElementById('tvSection');
+const tvGrid = document.getElementById('tvGrid');
 
 // Loading spinner and toast notification
 const loadingEl = document.getElementById('loading');
@@ -154,52 +159,65 @@ function getYear(dateString) {
    Each card shows the poster, title, year, and TMDB rating.
    -------------------------------------------------------------------------- */
 
+/* --------------------------------------------------------------------------
+   4. MEDIA CARD CREATION
+   --------------------------------------------------------------------------
+   This function creates a single card element (movie or TV show) for the grid.
+   Each card shows the poster, title/name, year, and TMDB rating.
+   -------------------------------------------------------------------------- */
+
 /**
- * createMovieCard(movie)
- * Builds and returns a DOM element representing a movie card.
- * The card is clickable and navigates to the movie detail page.
+ * createMediaCard(item, type)
+ * Builds and returns a DOM element representing a movie or TV show card.
+ * The card is clickable and navigates to the movie/TV detail page.
  *
- * @param {Object} movie - A movie object from TMDB with properties:
- *   - id: unique movie ID
- *   - title: movie title
- *   - poster_path: path to the poster image
- *   - release_date: release date string
- *   - vote_average: TMDB rating (0-10)
- * @returns {HTMLElement} - The movie card DOM element
+ * @param {Object} item - A movie or TV show object from TMDB
+ * @param {string} type - 'movie' or 'tv'
+ * @returns {HTMLElement} - The card DOM element
  */
-function createMovieCard(movie) {
+function createMediaCard(item, type) {
   // Create the main card container
   const card = document.createElement('div');
   card.className = 'movie-card';
 
-  // Make the entire card clickable — navigate to movie detail page
+  // Determine the media type (fallback to 'movie' if type is not provided)
+  const mediaType = type || item.media_type || 'movie';
+
+  // Make the entire card clickable — navigate to detail page
   card.addEventListener('click', () => {
-    window.location.href = `/movie.html?id=${movie.id}`;
+    window.location.href = `/movie.html?id=${item.id}&type=${mediaType}`;
   });
 
-  // Check if the movie has a poster image
-  // Some movies don't have posters, so we show a fallback
-  const posterHTML = movie.poster_path
+  const title = item.title || item.name;
+  const date = item.release_date || item.first_air_date;
+
+  // Check if the item has a poster image
+  const posterHTML = item.poster_path
     ? `<img
-         src="${POSTER_BASE}${movie.poster_path}"
-         alt="${movie.title} poster"
+         src="${POSTER_BASE}${item.poster_path}"
+         alt="${title} poster"
          loading="lazy"
        >`
     : `<div class="poster-fallback">🎬</div>`;
 
-  // Format the rating to 1 decimal place (e.g., 7.853 → "7.9")
-  const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+  // Format the rating to 1 decimal place
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
 
-  // Extract just the year from the release date
-  const year = getYear(movie.release_date);
+  // Extract just the year from the date
+  const year = getYear(date);
 
-  // Build the card's inner HTML using a template literal
-  // Template literals (backtick strings) let us embed variables with ${...}
+  // Type badge for TV shows
+  const typeBadge = mediaType === 'tv'
+    ? `<div class="type-badge">TV</div>`
+    : '';
+
+  // Build the card's inner HTML
   card.innerHTML = `
     ${posterHTML}
+    ${typeBadge}
     <div class="rating-badge">⭐ ${rating}</div>
     <div class="card-info">
-      <div class="card-title">${movie.title}</div>
+      <div class="card-title">${title}</div>
       <div class="card-year">${year}</div>
     </div>
   `;
@@ -209,38 +227,39 @@ function createMovieCard(movie) {
 
 
 /* --------------------------------------------------------------------------
-   5. RENDER MOVIES INTO A GRID
+   5. RENDER MEDIA INTO A GRID
    --------------------------------------------------------------------------
-   Takes an array of movies and a grid container element, then creates
-   and appends a card for each movie.
+   Takes an array of media items and a grid container element, then creates
+   and appends a card for each item.
    -------------------------------------------------------------------------- */
 
 /**
- * renderMovies(movies, gridElement)
- * Clears the grid and fills it with movie cards.
+ * renderMedia(items, gridElement, type)
+ * Clears the grid and fills it with media cards.
  *
- * @param {Array} movies - Array of movie objects from the API
+ * @param {Array} items - Array of movie or TV show objects from the API
  * @param {HTMLElement} gridElement - The container to put cards into
+ * @param {string} type - 'movie' or 'tv'
  */
-function renderMovies(movies, gridElement) {
+function renderMedia(items, gridElement, type) {
   // Clear any existing cards in the grid
   gridElement.innerHTML = '';
 
-  // If no movies found, show a message
-  if (!movies || movies.length === 0) {
+  // If no items found, show a message
+  if (!items || items.length === 0) {
     gridElement.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
         <div class="empty-icon">🔍</div>
-        <h3>No movies found</h3>
+        <h3>No ${type === 'tv' ? 'TV shows' : 'movies'} found</h3>
         <p>Try a different search term</p>
       </div>
     `;
     return;
   }
 
-  // Loop through each movie and create a card
-  movies.forEach(movie => {
-    const card = createMovieCard(movie);
+  // Loop through each item and create a card
+  items.forEach(item => {
+    const card = createMediaCard(item, type);
     gridElement.appendChild(card);
   });
 }
@@ -291,9 +310,6 @@ function setupHero(movie) {
  * This is the main function that runs when the page loads.
  */
 async function fetchTrendingMovies() {
-  // Show the loading spinner while we fetch data
-  showLoading();
-
   try {
     // fetch() makes an HTTP GET request to our backend API
     // The "await" keyword pauses until the response comes back
@@ -315,7 +331,7 @@ async function fetchTrendingMovies() {
     }
 
     // Render all movies in the trending grid
-    renderMovies(movies, trendingGrid);
+    renderMedia(movies, trendingGrid, 'movie');
 
   } catch (error) {
     // If something goes wrong (network error, server error, etc.)
@@ -324,10 +340,38 @@ async function fetchTrendingMovies() {
 
     // Show an error message to the user
     showToast('Failed to load trending movies. Please try again.');
-  } finally {
-    // "finally" runs whether the request succeeded or failed
-    // Always hide the loading spinner when we're done
-    hideLoading();
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   7.5. FETCH TRENDING TV SHOWS
+   --------------------------------------------------------------------------
+   Calls our backend API to get the list of trending TV shows,
+   then renders them in the TV shows section.
+   -------------------------------------------------------------------------- */
+
+/**
+ * fetchTrendingTvShows()
+ * Fetches trending TV shows from the backend API and displays them.
+ */
+async function fetchTrendingTvShows() {
+  try {
+    const response = await fetch('/api/tv/trending');
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const tvShows = data.results;
+
+    // Render all TV shows in the TV grid
+    renderMedia(tvShows, tvGrid, 'tv');
+
+  } catch (error) {
+    console.error('Error fetching trending TV shows:', error);
+    showToast('Failed to load trending TV shows. Please try again.');
   }
 }
 
@@ -340,30 +384,33 @@ async function fetchTrendingMovies() {
    -------------------------------------------------------------------------- */
 
 /**
- * searchMovies(query)
- * Fetches movies matching the search query and displays them.
+ * searchMoviesAndTv(query)
+ * Fetches both movies and TV shows matching the search query in parallel and displays them.
  *
  * @param {string} query - The search term entered by the user
  */
-async function searchMovies(query) {
+async function searchMoviesAndTv(query) {
   try {
-    // Make a GET request with the search query as a URL parameter
-    // encodeURIComponent handles special characters in the query
-    const response = await fetch(
-      `/api/movies/search?q=${encodeURIComponent(query)}`
-    );
+    // Fetch both movies and TV shows matching the query in parallel
+    const [moviesRes, tvRes] = await Promise.all([
+      fetch(`/api/movies/search?q=${encodeURIComponent(query)}`),
+      fetch(`/api/tv/search?q=${encodeURIComponent(query)}`)
+    ]);
 
-    if (!response.ok) {
-      throw new Error(`Search failed! Status: ${response.status}`);
-    }
+    if (!moviesRes.ok) throw new Error(`Movie search failed! Status: ${moviesRes.status}`);
+    if (!tvRes.ok) throw new Error(`TV search failed! Status: ${tvRes.status}`);
 
-    const data = await response.json();
+    const [moviesData, tvData] = await Promise.all([
+      moviesRes.json(),
+      tvRes.json()
+    ]);
 
-    // Render the search results in the search grid
-    renderMovies(data.results, searchGrid);
+    // Render the results into the respective movie and TV search grids
+    renderMedia(moviesData.results, searchMovieGrid, 'movie');
+    renderMedia(tvData.results, searchTvGrid, 'tv');
 
   } catch (error) {
-    console.error('Error searching movies:', error);
+    console.error('Error searching movies and TV shows:', error);
     showToast('Search failed. Please try again.');
   }
 }
@@ -380,18 +427,20 @@ function handleSearchInput(event) {
   const query = event.target.value.trim();
 
   if (query.length === 0) {
-    // If the search bar is empty, show trending and hide search results
+    // If the search bar is empty, show trending/TV and hide search results
     searchResults.style.display = 'none';
     trendingSection.style.display = 'block';
+    tvSection.style.display = 'block';
     heroSection.style.display = 'flex';
   } else {
-    // If there's a query, show search results and hide trending/hero
+    // If there's a query, show search results and hide trending/TV/hero
     searchResults.style.display = 'block';
     trendingSection.style.display = 'none';
+    tvSection.style.display = 'none';
     heroSection.style.display = 'none';
 
-    // Actually search for the movies
-    searchMovies(query);
+    // Search for both movies and TV shows
+    searchMoviesAndTv(query);
   }
 }
 
@@ -434,7 +483,38 @@ searchInput.addEventListener('keydown', (event) => {
 
 // DOMContentLoaded fires when the HTML is fully parsed
 // This ensures our JavaScript runs after all HTML elements exist
-document.addEventListener('DOMContentLoaded', () => {
-  // Fetch and display trending movies
-  fetchTrendingMovies();
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check if there is a search query in the URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchQuery = urlParams.get('search');
+
+  if (searchQuery) {
+    // Populate the search input
+    searchInput.value = searchQuery;
+
+    // Show search results and hide trending/TV/hero sections
+    searchResults.style.display = 'block';
+    trendingSection.style.display = 'none';
+    tvSection.style.display = 'none';
+    heroSection.style.display = 'none';
+
+    // Show loading, perform search, then hide loading
+    showLoading();
+    try {
+      await searchMoviesAndTv(searchQuery);
+    } finally {
+      hideLoading();
+    }
+  } else {
+    // Regular home page load — fetch trending movies and TV shows
+    showLoading();
+    try {
+      await Promise.all([
+        fetchTrendingMovies(),
+        fetchTrendingTvShows()
+      ]);
+    } finally {
+      hideLoading();
+    }
+  }
 });

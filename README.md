@@ -15,7 +15,7 @@ Discover trending movies, search for your favorites, write reviews using the uni
 - **Star Ratings** — Rate content from 1 to 5 stars
 - **Reviews** — Write, read, and delete your reviews (auth required)
 - **Personal Watchlist** — Save movies and TV shows to watch later
-- ️ **Favorites** — Keep track of your favorite content
+- ️**Favorites** — Keep track of your favorite content
 - **User Profile** — View your stats and update your display name
 - **Premium Dark Theme** — Stunning dark UI with violet accents and glassmorphism
 
