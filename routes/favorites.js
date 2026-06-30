@@ -39,7 +39,7 @@ router.use(requireAuth);
 router.get('/', async (req, res) => {
  try {
  // Find all favorites belonging to this user.
- // req.user._id was set by the requireAuth middleware.
+ // req.user._id was set by the requireAuth iddleware.
  const favorites = await Favorite.find({ userId: req.user._id })
  .sort({ addedAt: -1 }); // Newest first
 

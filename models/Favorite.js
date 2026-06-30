@@ -1,105 +1,101 @@
 // ==============================================
-// REVIEW MODEL
+// FAVORITE MODEL
 // ==============================================
-// A "model" in Mongoose defines the structure of
-// documents (records) that will be stored in a
-// MongoDB collection. Think of it as a blueprint
-// for what a "review" looks like in our database.
+// This model represents a movie or TV show that
+// a user has marked as a "favorite." Unlike the
+// watchlist (which is "want to watch"), favorites
+// are things the user has already seen and loved.
+//
+// Each entry stores the TMDB media ID, type
+// (movie or TV), title, and poster path so we
+// can display favorites without extra API calls.
 // ==============================================
 
-// Import mongoose so we can define a schema and model
+// Import mongoose for schema and model creation
 const mongoose = require('mongoose');
 
 // ------------------------------------------
-// Define the Review Schema
+// Define the Favorite Schema
 // ------------------------------------------
-// A schema is like a set of rules for our data.
-// It tells MongoDB: "A review MUST have these
-// fields, and they MUST be these types."
+// This schema defines what a favorite item looks
+// like in the database. Each favorite is linked
+// to a specific user via their userId.
 
-const reviewSchema = new mongoose.Schema({
- // userId: Links this review to the user who wrote it.
- // This lets us show "Delete" only on your own reviews
- // and display the correct author name automatically.
+const favoriteSchema = new mongoose.Schema({
+ // userId: Links this favorite to a specific user.
+ // "ObjectId" is MongoDB's unique identifier type.
+ // "ref: 'User'" tells Mongoose this ID points to
+ // a document in the "users" collection, enabling
+ // population (auto-fetching the full user data).
  userId: {
  type: mongoose.Schema.Types.ObjectId,
  ref: 'User',
- required: [true, 'User ID is required'],
- },
-
- // movieId: The unique ID from TMDB (The Movie Database).
- // We store this so we know which movie this review belongs to.
- // Type "Number" because TMDB uses numeric IDs (e.g., 550 for Fight Club).
- // "required: true" means you CANNOT create a review without a movieId.
- movieId: {
- type: Number,
- required: [true, 'Movie ID is required'],
- },
-
- // movieTitle: The name of the movie (e.g., "Inception").
- // We store this alongside the review so we can display
- // the movie name without making another API call to TMDB.
- movieTitle: {
- type: String,
- required: [true, 'Movie title is required'],
- },
-
- // author: Who wrote the review. Defaults to "Anonymous"
- // if no name is provided. The "trim" option removes
- // extra whitespace from the beginning and end.
- author: {
- type: String,
  required: true,
- default: 'Anonymous',
- trim: true,
  },
 
- // content: The actual review text.
- // This is the main body of what the user wrote.
- content: {
- type: String,
- required: [true, 'Review content is required'],
- trim: true,
- },
-
- // rating: A simple 1 to 5 star rating.
- // 1 = terrible, 5 = masterpiece.
- //
- // "min" and "max" ensure the value stays between 1 and 5.
- // Type is Number so we can easily calculate averages.
- rating: {
+ // mediaId: The unique numeric ID from TMDB.
+ // This works for both movies and TV shows since
+ // TMDB uses numeric IDs for everything.
+ mediaId: {
  type: Number,
- required: [true, 'Rating is required'],
- min: [1, 'Rating must be at least 1'],
- max: [5, 'Rating cannot be more than 5'],
+ required: [true, 'Media ID is required'],
  },
 
- // mediaType: Whether this is a "movie" or "tv" show.
- // Defaults to "movie" for backward compatibility.
+ // mediaType: Whether this is a movie or TV show.
+ // "enum" restricts the value to ONLY 'movie' or 'tv'.
+ // This lets us handle both types in one collection
+ // instead of needing separate "favoriteMovies" and
+ // "favoriteTVShows" collections.
  mediaType: {
  type: String,
+ required: true,
  enum: ['movie', 'tv'],
- default: 'movie',
  },
 
- // createdAt: Automatically records when the review was created.
- // "Date.now" gives us the current date and time.
- // We don't need to set this manually — it happens automatically.
- createdAt: {
+ // title: The name of the movie or TV show.
+ // Stored so we can display favorites without
+ // needing to call the TMDB API every time.
+ title: {
+ type: String,
+ required: [true, 'Title is required'],
+ },
+
+ // posterPath: The relative path to the poster image
+ // on TMDB. For example: "/abc123.jpg"
+ // The frontend prepends the TMDB image base URL:
+ // "https://image.tmdb.org/t/p/w500" + posterPath
+ // Not required because some items might not have posters.
+ posterPath: {
+ type: String,
+ },
+
+ // addedAt: When this item was favorited.
+ // Defaults to the current date/time automatically.
+ addedAt: {
  type: Date,
  default: Date.now,
  },
 });
 
 // ------------------------------------------
+// Compound Unique Index
+// ------------------------------------------
+// This creates a "compound index" on three fields together.
+// It ensures that the COMBINATION of userId + mediaId +
+// mediaType is unique. This means:
+// - User A can favorite movie 550
+// - User B can ALSO favorite movie 550
+// - User A canNOT favorite movie 550 TWICE
+// - User A can favorite TV show 550 (different mediaType)
+//
+// Without this index, a user could accidentally add the
+// same item to their favorites multiple times.
+favoriteSchema.index({ userId: 1, mediaId: 1, mediaType: 1 }, { unique: true });
+
+// ------------------------------------------
 // Create and Export the Model
 // ------------------------------------------
-// mongoose.model() creates a Model from our schema.
-// The first argument 'Review' becomes the collection
-// name "reviews" in MongoDB (it auto-lowercases and
-// pluralizes the name).
-//
-// module.exports makes this model available for other
-// files to import using require('./models/Review').
+// The model name 'Favorite' will become the
+// "favorites" collection in MongoDB.
 
-module.exports = mongoose.model('Review', reviewSchema);
+module.exports = mongoose.model('Favorite', favoriteSchema);
